@@ -150,6 +150,28 @@ export default function Board({ session, isDark, toggleTheme }) {
     localStorage.setItem('midnite_recent_searches', JSON.stringify(updated))
   }
 
+  const scrollContainerRef = useRef(null)
+
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (e.deltaY !== 0 && e.deltaX === 0) {
+        e.preventDefault()
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollLeft += e.deltaY
+        }
+      }
+    }
+    const currentRef = scrollContainerRef.current
+    if (currentRef) {
+      currentRef.addEventListener('wheel', handleWheel, { passive: false })
+    }
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener('wheel', handleWheel)
+      }
+    }
+  }, [activeView])
+
   const fetchProfiles = async () => {
     const { data } = await supabase.from('profiles').select('id, full_name, avatar_url')
     if (data) setProfiles(data)
@@ -825,7 +847,7 @@ export default function Board({ session, isDark, toggleTheme }) {
             </div>
 
             {/* Kanban Board */}
-            <div className="flex-1 overflow-x-auto overflow-y-hidden">
+            <div ref={scrollContainerRef} className="flex-1 overflow-x-auto overflow-y-hidden">
               {loading ? (
                 <div className="flex items-center justify-center h-full text-on-surface-variant">Loading tasks...</div>
               ) : (

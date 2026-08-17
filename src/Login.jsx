@@ -79,7 +79,7 @@ export default function Login({ isDark, toggleTheme }) {
                       if (validationErrors.email) setValidationErrors(prev => ({ ...prev, email: null }))
                     }}
                     className={`w-full bg-surface-container-low text-on-surface border ${validationErrors.email ? 'border-error focus:border-error focus:ring-error' : 'border-outline-variant focus:border-primary focus:ring-primary'} rounded-lg px-md py-sm text-body-md focus:outline-none focus:ring-1 transition-colors`}
-                    placeholder="name@company.com" 
+                    placeholder="name@gmail.com" 
                   />
                   {validationErrors.email && (
                     <div className="text-error text-body-sm mt-1 flex items-center gap-1">
