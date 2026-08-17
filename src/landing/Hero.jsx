@@ -53,7 +53,7 @@ export default function Hero() {
             {/* Stats */}
             <div className="flex gap-12">
               <div>
-                <div className="text-2xl font-bold text-white mb-1">50+</div>
+                <div className="text-2xl font-bold text-white mb-1">2</div>
                 <div className="text-sm text-gray-400 font-medium">Projects</div>
               </div>
               <div>
