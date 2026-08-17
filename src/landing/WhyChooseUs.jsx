@@ -21,7 +21,7 @@ export default function WhyChooseUs() {
             need to succeed <br />
             <span className="text-gray-400">online.</span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-md leading-relaxed">
+          <p className="text-gray-400 text-lg max-w-[28rem] leading-relaxed">
             We combine strategic thinking with exceptional craftsmanship to create digital experiences that deliver real business results.
           </p>
         </div>

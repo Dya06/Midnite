@@ -35,7 +35,7 @@ export default function Hero() {
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-xl leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-[36rem] leading-relaxed">
               We build premium websites that are fast, modern, mobile-friendly, and designed to convert visitors into customers.
             </p>
 
