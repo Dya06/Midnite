@@ -74,7 +74,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="font-bold text-sm">Instagram</div>
-                <div className="text-gray-400 text-sm">@midnite.design</div>
+                <div className="text-gray-400 text-sm">@midnitesolutions_</div>
               </div>
             </a>
           </div>
