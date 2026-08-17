@@ -8,6 +8,7 @@ export default function Login({ isDark, toggleTheme }) {
   const [error, setError] = useState(null)
   const [validationErrors, setValidationErrors] = useState({})
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
 
   const handleAuth = async (e) => {
@@ -90,18 +91,29 @@ export default function Login({ isDark, toggleTheme }) {
                 <div>
                   <div className="flex justify-between items-center mb-xs">
                     <label className="block text-label-bold text-on-surface-variant">Password</label>
-                    <a className="text-label-bold text-primary hover:underline" href="#">Forgot?</a>
                   </div>
-                  <input 
-                    type="password"
-                    value={password}
-                    onChange={e => {
-                      setPassword(e.target.value)
-                      if (validationErrors.password) setValidationErrors(prev => ({ ...prev, password: null }))
-                    }}
-                    className={`w-full bg-surface-container-low text-on-surface border ${validationErrors.password ? 'border-error focus:border-error focus:ring-error' : 'border-outline-variant focus:border-primary focus:ring-primary'} rounded-lg px-md py-sm text-body-md focus:outline-none focus:ring-1 transition-colors`}
-                    placeholder="••••••••" 
-                  />
+                  <div className="relative w-full">
+                    <input 
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={e => {
+                        setPassword(e.target.value)
+                        if (validationErrors.password) setValidationErrors(prev => ({ ...prev, password: null }))
+                      }}
+                      className={`w-full bg-surface-container-low text-on-surface border ${validationErrors.password ? 'border-error focus:border-error focus:ring-error' : 'border-outline-variant focus:border-primary focus:ring-primary'} rounded-lg px-md py-sm pr-10 text-body-md focus:outline-none focus:ring-1 transition-colors`}
+                      placeholder="••••••••" 
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center"
+                      title={showPassword ? "Hide password" : "Show password"}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        {showPassword ? 'visibility_off' : 'visibility'}
+                      </span>
+                    </button>
+                  </div>
                   {validationErrors.password && (
                     <div className="text-error text-body-sm mt-1 flex items-center gap-1">
                       <span className="material-symbols-outlined text-[14px]">info</span>
