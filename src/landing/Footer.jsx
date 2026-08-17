@@ -41,13 +41,13 @@ export default function Footer() {
           
           {/* Left: Contact Info */}
           <div className="lg:w-1/3 space-y-4">
-            <a href="mailto:hello@midnite.com" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+            <a href="mailto:midnitesolutions@gmail.com" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div>
                 <div className="font-bold text-sm">Email Us</div>
-                <div className="text-gray-400 text-sm">hello@midnite.com</div>
+                <div className="text-gray-400 text-sm">midnitesolutions@gmail.com</div>
               </div>
             </a>
             <a href="https://wa.me/qr/Z2K75Z2LNEMKI1" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
