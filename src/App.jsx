@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import Login from './Login'
 import Board from './Board'
+import LandingPage from './LandingPage'
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -43,11 +44,15 @@ export default function App() {
       <Routes>
         <Route 
           path="/login" 
-          element={!session ? <Login isDark={isDark} toggleTheme={toggleTheme} /> : <Navigate to="/" />} 
+          element={!session ? <Login isDark={isDark} toggleTheme={toggleTheme} /> : <Navigate to="/admin" />} 
+        />
+        <Route 
+          path="/admin" 
+          element={session ? <Board session={session} isDark={isDark} toggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/" 
-          element={session ? <Board session={session} isDark={isDark} toggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          element={<LandingPage isDark={isDark} toggleTheme={toggleTheme} />} 
         />
       </Routes>
     </BrowserRouter>

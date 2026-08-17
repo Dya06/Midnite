@@ -170,3 +170,11 @@
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
   background-color: var(--color-outline);
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
