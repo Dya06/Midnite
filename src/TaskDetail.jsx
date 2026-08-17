@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabaseClient'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { uploadImage } from './utils/uploadImage'
 
 export default function TaskDetail({ task, session, activeBoard, onUpdate, onDeleteTask }) {
   if (!task) return null
@@ -39,6 +42,59 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
   // Comment editing state
   const [editingCommentId, setEditingCommentId] = useState(null)
   const [editingCommentContent, setEditingCommentContent] = useState('')
+
+  // Markdown Preview State
+  const [previewDescription, setPreviewDescription] = useState(false)
+
+  const handleImageUpload = async (e, setter, fieldToSave = null) => {
+    let file = null
+    
+    if (e.type === 'paste') {
+      const items = e.clipboardData?.items
+      for (let item of items) {
+        if (item.type.startsWith('image/')) {
+          file = item.getAsFile()
+          break
+        }
+      }
+    } else if (e.type === 'drop') {
+      e.preventDefault()
+      const items = e.dataTransfer?.items
+      for (let item of items) {
+        if (item.type.startsWith('image/')) {
+          file = item.getAsFile()
+          break
+        }
+      }
+    } else if (e.target.files?.length > 0) {
+      file = e.target.files[0]
+    }
+
+    if (file) {
+      e.preventDefault()
+      
+      const target = e.type === 'change' ? e.target.closest('.relative').querySelector('textarea') : e.target
+      const start = target ? target.selectionStart : 0
+      const end = target ? target.selectionEnd : 0
+      
+      const uploadingText = `\n![Uploading ${file.name}...]()\n`
+      
+      setter(prev => {
+        const newValue = prev.substring(0, start) + uploadingText + prev.substring(end)
+        return newValue
+      })
+
+      const url = await uploadImage(file)
+      
+      setter(prev => {
+        const newValue = url ? prev.replace(uploadingText, `\n![Image](${url})\n`) : prev.replace(uploadingText, '')
+        if (fieldToSave) {
+          saveField(fieldToSave, newValue)
+        }
+        return newValue
+      })
+    }
+  }
 
   // Sync props if task changes
   useEffect(() => {
@@ -281,13 +337,13 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
   }
 
   const renderActivityContent = (content) => {
-    const parts = content.split(/(@[a-zA-Z0-9_]+(?:\s[a-zA-Z0-9_]+)?)/g)
-    return parts.map((part, i) => {
-      if (part.startsWith('@')) {
-        return <span key={i} className="text-primary font-bold bg-primary/10 px-1 rounded">{part}</span>
-      }
-      return <span key={i}>{part}</span>
-    })
+    return (
+      <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {content}
+        </ReactMarkdown>
+      </div>
+    )
   }
 
   const renderTag = (tagStr, isRemoveable = false) => {
@@ -348,18 +404,51 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
         />
 
         <div className="mb-[64px]">
-          <div className="flex items-center gap-sm font-label-bold text-[12px] font-bold text-primary tracking-widest uppercase mb-sm">
-            <span className="material-symbols-outlined text-[18px]">notes</span>
-            Description
+          <div className="flex items-center justify-between mb-sm">
+            <div className="flex items-center gap-sm font-label-bold text-[12px] font-bold text-primary tracking-widest uppercase">
+              <span className="material-symbols-outlined text-[18px]">notes</span>
+              Description
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setPreviewDescription(!previewDescription)}
+                className="text-xs font-label-bold uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-low"
+              >
+                {previewDescription ? 'Edit' : 'Preview'}
+              </button>
+            </div>
           </div>
-          <div className="border border-surface-variant rounded-xl overflow-hidden bg-surface shadow-sm focus-within:border-primary transition-colors">
-            <textarea 
-              className="w-full p-lg font-body-md text-on-surface min-h-[200px] whitespace-pre-wrap bg-transparent outline-none resize-none"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onBlur={(e) => saveField('description', e.target.value)}
-              placeholder="Add details..."
-            />
+          <div className="border border-surface-variant rounded-xl overflow-hidden bg-surface shadow-sm focus-within:border-primary transition-colors relative">
+            {previewDescription ? (
+              <div className="w-full p-lg font-body-md text-on-surface min-h-[200px] prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {description || '*No description provided.*'}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <>
+                <textarea 
+                  className="w-full p-lg font-body-md text-on-surface min-h-[200px] whitespace-pre-wrap bg-transparent outline-none resize-none pb-12"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  onBlur={(e) => saveField('description', e.target.value)}
+                  onPaste={(e) => handleImageUpload(e, setDescription, 'description')}
+                  onDrop={(e) => handleImageUpload(e, setDescription, 'description')}
+                  placeholder="Add details... (Markdown supported. Paste or drop images here)"
+                />
+                <div className="absolute bottom-2 left-2 flex gap-2">
+                  <label className="cursor-pointer text-on-surface-variant hover:text-primary p-2 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[20px]">image</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={(e) => handleImageUpload(e, setDescription, 'description')} 
+                    />
+                  </label>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -384,9 +473,23 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
                   id="comment-textarea"
                   value={newComment}
                   onChange={handleCommentChange}
-                  className="w-full bg-transparent p-md font-body-md resize-none outline-none min-h-[100px]" 
-                  placeholder="Write a comment... (Type @ to mention)"
+                  onPaste={(e) => handleImageUpload(e, setNewComment)}
+                  onDrop={(e) => handleImageUpload(e, setNewComment)}
+                  className="w-full bg-transparent p-md font-body-md resize-none outline-none min-h-[100px] pb-12" 
+                  placeholder="Write a comment... (Type @ to mention. Markdown and images supported)"
                 ></textarea>
+                
+                <div className="absolute bottom-2 left-2 flex gap-2">
+                  <label className="cursor-pointer text-on-surface-variant hover:text-primary p-2 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[20px]">image</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={(e) => handleImageUpload(e, setNewComment)} 
+                    />
+                  </label>
+                </div>
                 
                 {/* Mentions Popup */}
                 {mentionQuery !== null && (

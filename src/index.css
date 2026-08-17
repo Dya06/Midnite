@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/typography";
 @theme {
   --color-inverse-primary: #c6c6c6;
   --color-surface-bright: #f9f9f9;
