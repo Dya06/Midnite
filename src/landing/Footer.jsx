@@ -23,7 +23,7 @@ export default function Footer() {
     const text = `Hello MIDNITE!%0A%0A*Name:* ${formData.name}%0A*Company:* ${formData.company}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A%0A*Message:*%0A${formData.message}`
     
     // Open WhatsApp URL
-    window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank')
+    window.open(`https://wa.me/qr/Z2K75Z2LNEMKI1?text=${text}`, '_blank')
   }
 
   return (
@@ -50,7 +50,7 @@ export default function Footer() {
                 <div className="text-gray-400 text-sm">hello@midnite.com</div>
               </div>
             </a>
-            <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+            <a href="https://wa.me/qr/Z2K75Z2LNEMKI1" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-white/10 text-white flex items-center justify-center shrink-0">
                 <MessageCircle className="w-5 h-5" />
               </div>
@@ -59,7 +59,7 @@ export default function Footer() {
                 <div className="text-gray-400 text-sm">Chat with us</div>
               </div>
             </a>
-            <a href="#" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+            <a href="https://www.linkedin.com/in/midnite-solutions-5314163a9?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
                 <Briefcase className="w-5 h-5" />
               </div>
@@ -68,7 +68,7 @@ export default function Footer() {
                 <div className="text-gray-400 text-sm">Follow our updates</div>
               </div>
             </a>
-            <a href="#" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+            <a href="https://www.instagram.com/midnitesolutions_?igsh=Zmo5aHE5MTloaWY2" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
                 <Camera className="w-5 h-5" />
               </div>
