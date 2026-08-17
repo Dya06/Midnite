@@ -44,7 +44,7 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
   const [editingCommentContent, setEditingCommentContent] = useState('')
 
   // Markdown Preview State
-  const [previewDescription, setPreviewDescription] = useState(false)
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
 
   const handleImageUpload = async (e, setter, fieldToSave = null) => {
     let file = null
@@ -343,7 +343,7 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
 
   const renderActivityContent = (content) => {
     return (
-      <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl">
+      <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl prose-img:max-h-96 prose-img:w-auto prose-img:object-contain">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {content}
         </ReactMarkdown>
@@ -414,34 +414,36 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
               <span className="material-symbols-outlined text-[18px]">notes</span>
               Description
             </div>
-            <div className="flex items-center gap-2">
+            {!isEditingDescription && (
               <button 
-                onClick={() => setPreviewDescription(!previewDescription)}
+                onClick={() => setIsEditingDescription(true)}
                 className="text-xs font-label-bold uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-low"
               >
-                {previewDescription ? 'Edit' : 'Preview'}
+                Edit
               </button>
-            </div>
+            )}
           </div>
           <div className="border border-surface-variant rounded-xl overflow-hidden bg-surface shadow-sm focus-within:border-primary transition-colors relative">
-            {previewDescription ? (
-              <div className="w-full p-lg font-body-md text-on-surface min-h-[200px] prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl">
+            {!isEditingDescription ? (
+              <div 
+                onClick={() => setIsEditingDescription(true)}
+                className="w-full p-lg font-body-md text-on-surface min-h-[100px] prose prose-invert max-w-none prose-p:leading-relaxed prose-img:rounded-xl prose-img:max-h-96 prose-img:w-auto prose-img:object-contain cursor-pointer hover:bg-surface-container-lowest transition-colors"
+              >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {description || '*No description provided.*'}
+                  {description || '*No description provided. Click to add one.*'}
                 </ReactMarkdown>
               </div>
             ) : (
               <>
                 <textarea 
-                  className="w-full p-lg font-body-md text-on-surface min-h-[200px] whitespace-pre-wrap bg-transparent outline-none resize-none pb-12"
+                  className="w-full p-lg font-body-md text-on-surface min-h-[200px] whitespace-pre-wrap bg-transparent outline-none resize-none pb-14"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  onBlur={(e) => saveField('description', e.target.value)}
                   onPaste={(e) => handleImageUpload(e, setDescription, 'description')}
                   onDrop={(e) => handleImageUpload(e, setDescription, 'description')}
                   placeholder="Add details... (Markdown supported. Paste or drop images here)"
                 />
-                <div className="absolute bottom-2 left-2 flex gap-2">
+                <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center bg-surface pb-1 pt-1">
                   <label className="cursor-pointer text-on-surface-variant hover:text-primary p-2 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-center">
                     <span className="material-symbols-outlined text-[20px]">image</span>
                     <input 
@@ -451,6 +453,15 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
                       onChange={(e) => handleImageUpload(e, setDescription, 'description')} 
                     />
                   </label>
+                  <button 
+                    onClick={() => {
+                      saveField('description', description)
+                      setIsEditingDescription(false)
+                    }}
+                    className="px-lg py-1.5 bg-primary text-on-primary font-label-bold text-[11px] tracking-wider uppercase rounded-lg hover:bg-inverse-surface transition-colors shadow-sm"
+                  >
+                    Save
+                  </button>
                 </div>
               </>
             )}
