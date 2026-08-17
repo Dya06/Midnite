@@ -87,11 +87,16 @@ export default function TaskDetail({ task, session, activeBoard, onUpdate, onDel
       const url = await uploadImage(file)
       
       setter(prev => {
-        const newValue = url ? prev.replace(uploadingText, `\n![Image](${url})\n`) : prev.replace(uploadingText, '')
-        if (fieldToSave) {
-          saveField(fieldToSave, newValue)
+        if (url) {
+          const newValue = prev.replace(uploadingText, `\n![Image](${url})\n`)
+          if (fieldToSave) {
+            saveField(fieldToSave, newValue)
+          }
+          return newValue
+        } else {
+          alert("Image upload failed! Please make sure your Supabase 'task-images' bucket has an RLS policy allowing INSERT for authenticated/anon users.")
+          return prev.replace(uploadingText, '')
         }
-        return newValue
       })
     }
   }
